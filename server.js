@@ -6,6 +6,9 @@ const rateLimit = require('express-rate-limit');
 const app = express();
 const PORT = process.env.PORT || 10000;
 
+// Render.com / Reverse Proxy IP Doğrulaması İçin Zorunlu Ayar
+app.set('trust proxy', 1);
+
 // Body Parser
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
@@ -32,7 +35,7 @@ const transactions = [];
     });
 })();
 
-// API: KAYIT OL (Şifre Hash'leme ile)
+// API: KAYIT OL
 app.post('/api/register', async (req, res) => {
     const { email, password } = req.body;
 
@@ -45,14 +48,13 @@ app.post('/api/register', async (req, res) => {
         return res.status(400).json({ success: false, message: 'Bu e-posta adresi zaten kayıtlı.' });
     }
 
-    // Şifreyi güvenli bir şekilde hash'le
     const hashedPassword = await bcrypt.hash(password, 10);
     users.push({ id: Date.now(), email, password: hashedPassword });
 
     return res.json({ success: true, message: 'Kayıt başarılı!' });
 });
 
-// API: GİRİŞ YAP (Hash Doğrulama ile)
+// API: GİRİŞ YAP
 app.post('/api/login', async (req, res) => {
     const { email, password } = req.body;
 
@@ -61,7 +63,6 @@ app.post('/api/login', async (req, res) => {
         return res.status(401).json({ success: false, message: 'E-posta veya şifre hatalı.' });
     }
 
-    // Hash'lenmiş şifreyi karşılaştır
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
         return res.status(401).json({ success: false, message: 'E-posta veya şifre hatalı.' });
