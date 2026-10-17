@@ -1,0 +1,13 @@
+{
+  "name": "kisisel-butce-takip",
+  "version": "1.0.0",
+  "description": "Web Tabanlı Kişisel Bütçe ve Harcama Takip Uygulaması",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "cors": "^2.8.5"
+  }
+}
