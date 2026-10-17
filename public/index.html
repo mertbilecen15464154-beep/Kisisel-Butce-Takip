@@ -9,7 +9,7 @@
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <!-- html2pdf.js Kütüphanesi (Doğrudan PDF İndirme İçin) -->
+    <!-- html2pdf.js Kütüphanesi -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <script>
         tailwind.config = {
@@ -123,46 +123,57 @@
             <!-- İŞLEM EKLEME VE FİLTRELEME ALANI -->
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 
-                <!-- Sol: Yeni İşlem Formu -->
-                <div class="glass p-6 rounded-2xl border border-gray-800 space-y-4">
-                    <h3 class="text-sm font-bold text-white flex items-center gap-2">
-                        <i class="fa-solid fa-plus-circle text-indigo-400"></i> Yeni Gelir / Gider Ekle
-                    </h3>
-                    <form id="transactionForm" class="space-y-3.5 text-xs">
-                        <div>
-                            <label class="block text-gray-400 mb-1">İşlem Türü</label>
-                            <select id="txType" class="w-full bg-gray-900 border border-gray-800 rounded-xl p-2.5 text-white focus:outline-none focus:border-indigo-500">
-                                <option value="gider">Gider (-)</option>
-                                <option value="gelir">Gelir (+)</option>
-                            </select>
+                <!-- Sol: Yeni İşlem Formu ve Kategori Ekleme -->
+                <div class="space-y-6">
+                    <!-- İşlem Ekleme Kartı -->
+                    <div class="glass p-6 rounded-2xl border border-gray-800 space-y-4">
+                        <h3 class="text-sm font-bold text-white flex items-center gap-2">
+                            <i class="fa-solid fa-plus-circle text-indigo-400"></i> Yeni Gelir / Gider Ekle
+                        </h3>
+                        <form id="transactionForm" class="space-y-3.5 text-xs">
+                            <div>
+                                <label class="block text-gray-400 mb-1">İşlem Türü</label>
+                                <select id="txType" class="w-full bg-gray-900 border border-gray-800 rounded-xl p-2.5 text-white focus:outline-none focus:border-indigo-500">
+                                    <option value="gider">Gider (-)</option>
+                                    <option value="gelir">Gelir (+)</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-gray-400 mb-1">İşlem Adı / Açıklama</label>
+                                <input type="text" id="txTitle" placeholder="Örn: Market Alışverişi" required class="w-full bg-gray-900 border border-gray-800 rounded-xl p-2.5 text-white focus:outline-none focus:border-indigo-500">
+                            </div>
+                            <div>
+                                <label class="block text-gray-400 mb-1">Tutar (₺)</label>
+                                <input type="number" step="0.01" id="txAmount" placeholder="0.00" required class="w-full bg-gray-900 border border-gray-800 rounded-xl p-2.5 text-white focus:outline-none focus:border-indigo-500">
+                            </div>
+                            <div>
+                                <label class="block text-gray-400 mb-1">Kategori</label>
+                                <select id="txCategory" class="w-full bg-gray-900 border border-gray-800 rounded-xl p-2.5 text-white focus:outline-none focus:border-indigo-500">
+                                    <!-- Dinamik yüklenecek -->
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-gray-400 mb-1">Tarih</label>
+                                <input type="date" id="txDate" required class="w-full bg-gray-900 border border-gray-800 rounded-xl p-2.5 text-white focus:outline-none focus:border-indigo-500">
+                            </div>
+                            <button type="submit" class="w-full py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded-xl transition shadow-lg">
+                                İşlemi Kaydet
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- Özel Kategori Ekleme Kartı -->
+                    <div class="glass p-5 rounded-2xl border border-gray-800 space-y-3">
+                        <h4 class="text-xs font-bold text-white flex items-center gap-2">
+                            <i class="fa-solid fa-folder-plus text-amber-400"></i> Yeni Kategori Oluştur
+                        </h4>
+                        <div class="flex gap-2">
+                            <input type="text" id="newCategoryInput" placeholder="Örn: Yatırım" class="flex-1 bg-gray-900 border border-gray-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-500">
+                            <button onclick="addNewCategory()" class="px-4 py-2 bg-amber-600 hover:bg-amber-500 text-white font-bold text-xs rounded-xl transition">
+                                Ekle
+                            </button>
                         </div>
-                        <div>
-                            <label class="block text-gray-400 mb-1">İşlem Adı / Açıklama</label>
-                            <input type="text" id="txTitle" placeholder="Örn: Market Alışverişi" required class="w-full bg-gray-900 border border-gray-800 rounded-xl p-2.5 text-white focus:outline-none focus:border-indigo-500">
-                        </div>
-                        <div>
-                            <label class="block text-gray-400 mb-1">Tutar (₺)</label>
-                            <input type="number" step="0.01" id="txAmount" placeholder="0.00" required class="w-full bg-gray-900 border border-gray-800 rounded-xl p-2.5 text-white focus:outline-none focus:border-indigo-500">
-                        </div>
-                        <div>
-                            <label class="block text-gray-400 mb-1">Kategori</label>
-                            <select id="txCategory" class="w-full bg-gray-900 border border-gray-800 rounded-xl p-2.5 text-white focus:outline-none focus:border-indigo-500">
-                                <option value="Yemek">Yemek</option>
-                                <option value="Ulaşım">Ulaşım</option>
-                                <option value="Faturalar">Faturalar</option>
-                                <option value="Eğlence">Eğlence</option>
-                                <option value="Gelir">Gelir</option>
-                                <option value="Diğer">Diğer</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="block text-gray-400 mb-1">Tarih</label>
-                            <input type="date" id="txDate" required class="w-full bg-gray-900 border border-gray-800 rounded-xl p-2.5 text-white focus:outline-none focus:border-indigo-500">
-                        </div>
-                        <button type="submit" class="w-full py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded-xl transition shadow-lg">
-                            İşlemi Kaydet
-                        </button>
-                    </form>
+                    </div>
                 </div>
 
                 <!-- Sağ: İşlem Listesi, Filtreleme ve Dışa Aktarma -->
@@ -175,13 +186,7 @@
                         <!-- Araçlar: Filtreleme + Excel & PDF İndirme Butonları -->
                         <div class="flex flex-wrap items-center gap-2 text-xs">
                             <select id="filterCategory" onchange="loadTransactions()" class="bg-gray-900 border border-gray-800 rounded-lg p-2 text-white">
-                                <option value="Tümü">Tüm Kategoriler</option>
-                                <option value="Yemek">Yemek</option>
-                                <option value="Ulaşım">Ulaşım</option>
-                                <option value="Faturalar">Faturalar</option>
-                                <option value="Eğlence">Eğlence</option>
-                                <option value="Gelir">Gelir</option>
-                                <option value="Diğer">Diğer</option>
+                                <!-- Dinamik yüklenecek -->
                             </select>
 
                             <div class="export-btns flex items-center gap-1.5">
@@ -196,7 +201,7 @@
                     </div>
 
                     <!-- Liste Alanı -->
-                    <div id="transactionList" class="space-y-2.5 overflow-y-auto max-h-[420px] pr-1 flex-1">
+                    <div id="transactionList" class="space-y-2.5 overflow-y-auto max-h-[460px] pr-1 flex-1">
                         <!-- Dinamik doldurulacak -->
                     </div>
                 </div>
@@ -210,6 +215,50 @@
     <script>
         document.getElementById('txDate').valueAsDate = new Date();
         let currentTransactions = [];
+        
+        // Varsayılan Kategoriler Listesi
+        let categories = ['Yemek', 'Ulaşım', 'Faturalar', 'Eğlence', 'Gelir', 'Diğer'];
+
+        function renderCategoryOptions() {
+            const txSelect = document.getElementById('txCategory');
+            const filterSelect = document.getElementById('filterCategory');
+
+            const currentFilter = filterSelect.value || 'Tümü';
+            const currentTxCat = txSelect.value;
+
+            // Form Select
+            txSelect.innerHTML = categories.map(c => `<option value="${c}">${c}</option>`).join('');
+            if (currentTxCat && categories.includes(currentTxCat)) {
+                txSelect.value = currentTxCat;
+            }
+
+            // Filter Select
+            filterSelect.innerHTML = `<option value="Tümü">Tüm Kategoriler</option>` + 
+                categories.map(c => `<option value="${c}">${c}</option>`).join('');
+            
+            filterSelect.value = currentFilter;
+        }
+
+        function addNewCategory() {
+            const input = document.getElementById('newCategoryInput');
+            const catName = input.value.trim();
+
+            if (!catName) {
+                alert("Lütfen bir kategori adı girin.");
+                return;
+            }
+
+            if (categories.some(c => c.toLowerCase() === catName.toLowerCase())) {
+                alert("Bu kategori zaten mevcut.");
+                return;
+            }
+
+            categories.push(catName);
+            renderCategoryOptions();
+            document.getElementById('txCategory').value = catName;
+            input.value = '';
+            alert(`"${catName}" kategorisi başarıyla eklendi!`);
+        }
 
         function switchTab(type) {
             const loginForm = document.getElementById('loginForm');
@@ -282,10 +331,12 @@
             document.getElementById('authModal').classList.add('hidden');
             document.getElementById('appContent').classList.remove('hidden');
             document.getElementById('userEmailDisplay').textContent = email;
+            renderCategoryOptions();
             loadTransactions();
         }
 
         window.addEventListener('DOMContentLoaded', () => {
+            renderCategoryOptions();
             const savedEmail = localStorage.getItem('userEmail');
             if (savedEmail) {
                 initApp(savedEmail);
@@ -304,6 +355,15 @@
                 const data = await res.json();
                 if (data.success) {
                     currentTransactions = data.transactions;
+                    
+                    // Veritabanındaki özel kategorileri de listeye ekleyelim
+                    data.transactions.forEach(t => {
+                        if (t.category && !categories.includes(t.category)) {
+                            categories.push(t.category);
+                        }
+                    });
+                    renderCategoryOptions();
+
                     renderTransactions(data.transactions);
                     calculateSummary(data.transactions);
                 }
@@ -430,7 +490,7 @@
             document.body.removeChild(link);
         }
 
-        // DOĞRUDAN PDF DOSYASI İNDİRME (html2pdf.js)
+        // DOĞRUDAN PDF DOSYASI İNDİRME
         function exportPDF() {
             if (!currentTransactions || currentTransactions.length === 0) {
                 alert("Dışa aktarılacak veri bulunamadı.");
